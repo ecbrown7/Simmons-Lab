@@ -43,7 +43,7 @@ mRNA_transfections2 = function(volTf, numWells, delWell, porPerc, mmRNARatio, me
         mRNAOpti = optiVol - mmOpti
         
         #Output for each iteration
-        output = c(cyps$cyp[i], round(as.numeric(ifelse(finalPor < 0.1, finalPor20, ifelse(finalPor < 1, finalPor10, finalPor))), digits = 3), ifelse(finalPor < 0.1, "1:20", ifelse(finalPor < 1, "1:10", "No Dilution")), round(as.numeric(mmVol), digits = 3), round(as.numeric(mRNAvol), digits = 3), round(as.numeric(mmOpti), digits = 3), round(as.numeric(mRNAOpti), digits = 3))
+        output = c(cyps$cyp[i], round(as.numeric(ifelse(finalPor < 0.1, finalPor20, ifelse(finalPor < 1, finalPor10, finalPor))), digits = 2), ifelse(finalPor < 0.1, "1:20", ifelse(finalPor < 1, "1:10", "No Dilution")), round(as.numeric(mmVol), digits = 2), round(as.numeric(mRNAvol), digits = 2), round(as.numeric(mmOpti), digits = 2), round(as.numeric(mRNAOpti), digits = 2))
         
         #Compile iterations
         df = rbind(df, output)
@@ -60,9 +60,20 @@ mRNA_transfections2 = function(volTf, numWells, delWell, porPerc, mmRNARatio, me
 shinyServer(function(input, output) {
 
     output$info <- renderTable({
-        
         mRNA_transfections2(input$tv, input$wells, input$ng, input$por, input$ratio, input$dilution)
-
+    })
+    
+    output$text1 = renderText({
+        testset = mRNA_transfections2(input$tv, input$wells, input$ng, input$por, input$ratio, input$dilution)
+        MMsum = sum(as.numeric(testset[,6])) * 1.1
+        Optisum = round(sum(as.numeric(testset[,7])) *1.1/1000, digits = 2)
+        
+        paste0("For a master Tube A for all biogroups: Add ", MMsum, "uL MessengerMax to ", Optisum, "mL Opti-MEM.")
     })
 
 })
+
+
+
+
+

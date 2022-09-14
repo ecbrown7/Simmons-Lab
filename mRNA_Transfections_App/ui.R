@@ -11,16 +11,16 @@ shinyUI(fluidPage(
         sidebarPanel(
             numericInput("ng",
                          "Final mRNA Target (ng/well)",
-                         value = 15),
-            h6("Note: Transfection volume should be ~ 1/10th of final mRNA target."),
+                         value = 50),
+            h6("Note: Transfection volume should be 1/10th of final mRNA target."),
             
             numericInput("tv",
                         "Transfection Volume (uL/well)",
-                        value = 1.0),
+                        value = 5),
             
             numericInput("wells",
                          "Number of Wells to Transfect",
-                         value = 1536, step = 1),
+                         value = 384, step = 1),
             
             numericInput("por",
                          "Final POR Percentage (of total mRNA)",
@@ -37,7 +37,8 @@ shinyUI(fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-            tableOutput("info")
+            tableOutput("info"),
+            textOutput("text1")
         )
     ), theme = shinytheme("yeti")
 ))

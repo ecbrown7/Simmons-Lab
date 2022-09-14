@@ -1,0 +1,13 @@
+name: mRNA_Transfections_App
+title: mRNA_Transfections_App
+username:
+account: ecbrown7
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7009835
+bundleId: 6301528
+url: https://ecbrown7.shinyapps.io/mRNA_Transfections_App/
+when: 1663167272.86452
+lastSyncTime: 1663167272.86452
+asMultiple: FALSE
+asStatic: FALSE
