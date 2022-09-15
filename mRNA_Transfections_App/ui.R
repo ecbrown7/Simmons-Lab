@@ -12,7 +12,7 @@ shinyUI(fluidPage(
             numericInput("ng",
                          "Final mRNA Target (ng/well)",
                          value = 50),
-            h6("Note: Transfection volume should be 1/10th of final mRNA target."),
+            h6("Note: Transfection volume should be ~ 1/10th of final mRNA target."),
             
             numericInput("tv",
                         "Transfection Volume (uL/well)",

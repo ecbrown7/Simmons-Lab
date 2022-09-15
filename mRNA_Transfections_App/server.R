@@ -21,34 +21,39 @@ mRNA_transfections2 = function(volTf, numWells, delWell, porPerc, mmRNARatio, me
         #Function to calculate appropriate volume mRNA to add to achieve final concentration that will deliver desired mRNA (ng) per well
         mRNAvol = (((delWell/1000) * adjVol/ volTf)/mRNAconc)
         
-        #Por concentration is fixed
+        #Por concentration
         porConc = 1.87
+        
+        #Make total mRNA POR inclusive: delWell = mRNA + POR
         totmRNA = mRNAvol * mRNAconc
-        #Calculate target amount (ug) of POR to add
-        porTarget = totmRNA * porPerc
-        #Calculate uL POR to add from stock
+        newPOR = totmRNA*porPerc
+        adjPOR = newPOR / porConc
+        newmRNA = totmRNA*(1-porPerc)
+        adjmRNA = newmRNA / mRNAconc
+        
         #Use if/then logic to determine which POR to deliver
-        finalPor = porTarget/porConc
+        finalPor = adjPOR
         finalPor10 = finalPor*10
         finalPor20 = finalPor*20
         
         #Find vol of messmax required
         mmVol = mmRNARatio * totmRNA
-        
-        #Find total opti vol
-        optiVol = adjVol - mRNAvol - mmVol - finalPor10
         #Vol of Opti to dilute MessMax with
         mmOpti = mmVol/messMaxDil
+        #Make Opti volume reactive to different POR dilutions
+        optiVol2 = ifelse(finalPor < 0.1, (adjVol - mRNAvol - mmVol - finalPor10),
+                          ifelse(finalPor < 1, adjVol - mRNAvol - mmVol - finalPor10, 
+                                 adjVol - mRNAvol - mmVol - finalPor))
         #Volume of opti to mix mRNA in
-        mRNAOpti = optiVol - mmOpti
+        mRNAOpti = optiVol2 - mmOpti
         
-        #Output for each iteration
-        output = c(cyps$cyp[i], round(as.numeric(ifelse(finalPor < 0.1, finalPor20, ifelse(finalPor < 1, finalPor10, finalPor))), digits = 2), ifelse(finalPor < 0.1, "1:20", ifelse(finalPor < 1, "1:10", "No Dilution")), round(as.numeric(mmVol), digits = 2), round(as.numeric(mRNAvol), digits = 2), round(as.numeric(mmOpti), digits = 2), round(as.numeric(mRNAOpti), digits = 2))
+        #Output for each cyp iteration
+        output = c(cyps$cyp[i], round(as.numeric(ifelse(finalPor < 0.1, finalPor20, ifelse(finalPor < 1, finalPor10, finalPor))), digits = 2), ifelse(finalPor < 0.1, "1:20", ifelse(finalPor < 1, "1:10", "No Dilution")), round(as.numeric(mmVol), digits = 2), round(as.numeric(adjmRNA), digits = 2), round(as.numeric(mmOpti), digits = 2), round(as.numeric(mRNAOpti), digits = 2))
         
         #Compile iterations
         df = rbind(df, output)
         
-        #Edit table feature
+        #Edit table features
         colnames(df) = c("Cyp", "POR Volume (uL)", "POR Dilution", "MessengerMax Volume (uL)", "mRNA Volume (uL)", "Opti-MEM Volume for MM Dilution (uL)", "Opti-MEM Volume for mRNAs (uL)")
     }
     
@@ -56,13 +61,15 @@ mRNA_transfections2 = function(volTf, numWells, delWell, porPerc, mmRNARatio, me
 }
 
 
-# Define server logic required to draw a histogram
+#Shiny server function to get outputs
 shinyServer(function(input, output) {
 
+    #info table output
     output$info <- renderTable({
         mRNA_transfections2(input$tv, input$wells, input$ng, input$por, input$ratio, input$dilution)
     })
     
+    #Tube A instructions output
     output$text1 = renderText({
         testset = mRNA_transfections2(input$tv, input$wells, input$ng, input$por, input$ratio, input$dilution)
         MMsum = round(sum(as.numeric(testset[,6])) * 1.1, digits = 2)
@@ -72,7 +79,6 @@ shinyServer(function(input, output) {
     })
 
 })
-
 
 
 
