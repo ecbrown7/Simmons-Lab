@@ -32,12 +32,21 @@ shinyUI(fluidPage(
             
             numericInput("dilution",
                          "MessengerMax Dilution (to Opti-MEM)",
-                         value = 1/20)
+                         value = 1/20),
+            br(),
+            h5("General Protocol:"),  
+            h5("1. Prepare Tube A Mastermix (MessengerMax + Opti-MEM)"),
+            h5("2. Make POR dilution (if necessary)"),
+            h5("3. Mix Tube B's (mRNAs + Opti-MEM) -> vortex"),
+            h5("4. Aliquot Tube A Mastermix to Tube B's -> vortex"),
+            h5("5. Incubate 5 minutes"),
+            h5("6. Dispense")
         ),
 
         # Show a plot of the generated distribution
         mainPanel(
             tableOutput("info"),
+            br(),
             textOutput("text1")
         )
     ), theme = shinytheme("yeti")

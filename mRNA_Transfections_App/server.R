@@ -65,10 +65,10 @@ shinyServer(function(input, output) {
     
     output$text1 = renderText({
         testset = mRNA_transfections2(input$tv, input$wells, input$ng, input$por, input$ratio, input$dilution)
-        MMsum = sum(as.numeric(testset[,6])) * 1.1
+        MMsum = round(sum(as.numeric(testset[,6])) * 1.1, digits = 2)
         Optisum = round(sum(as.numeric(testset[,7])) *1.1/1000, digits = 2)
         
-        paste0("For a master Tube A for all biogroups: Add ", MMsum, "uL MessengerMax to ", Optisum, "mL Opti-MEM.")
+        paste0("Tube A Mastermix: Add ", MMsum, "uL MessengerMax to ", Optisum, "mL Opti-MEM.")
     })
 
 })
